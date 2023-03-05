@@ -1,6 +1,11 @@
 # OutlineManager
 .NET Library for Outline Proxy Manager API
 
+## Installation
+```
+dotnet add package OutlineManager --version 1.0.1
+```
+
 ## Quick start
 1. Get your API Management URL from your Outline Server - sudo cat /opt/outline/access.txt
 2. Pastу your URL into "OutlineManager" object in your C# Project:
