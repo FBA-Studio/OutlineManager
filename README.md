@@ -3,14 +3,14 @@
 
 ## Quick start
 1. Get your API Management URL from your Outline Server - sudo cat /opt/outline/access.txt
-2. Past your URL into "OutlineManager" in your C# Project:
+2. Pastу your URL into "OutlineManager" object in your C# Project:
 ```csharp
 private static string apiUrl = "your URL from Outline Server";
 public static OutlineManager outline = new OutlineManager(apiUrl);
 ```
 
 ## Get Outline Keys
-Use method **.GetKeys()** to get list of Outline Keys in the `List<OutlineKey>`:
+Use method `.GetKeys()` to get list of Outline Keys in the `List<OutlineKey>`:
 ```csharp
 //returns List<OutlineKey>
 var keys = outline.GetKeys();
@@ -61,5 +61,5 @@ You can get list of keys with transferred data in bytes with method `.GetTransfe
 var transferredData = outline.GetTransferredData();
 ```
 
-## ❤️Support Devs for this Library
+## ❤️Support Devs of this Library
 DonationAlerts - https://www.donationalerts.com/r/fba_studio
