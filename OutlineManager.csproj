@@ -2,14 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <Company>Federal Bot Association</Company>
+    <Authors>LanceFBA</Authors>
+    <Product>OutlineManager</Product>
+    <PackageIcon>images\icon.png</PackageIcon>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DocumentationFile>bin\Release\netcoreapp3.1\OutlineManager.xml</DocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
-    <None Remove="Types\" />
     <None Remove="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Types\" />
+    <None Include="/Users/lance/Projects/OutlineManager/icon.png" Pack="true" Visible="false" PackagePath="images\icon.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
