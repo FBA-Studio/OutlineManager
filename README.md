@@ -1,5 +1,5 @@
 # OutlineManager
-.NET Library for Outline Manager API
+.NET Library for Outline Proxy Manager API
 
 ## Quick start
 1. Get your API Management URL from your Outline Server - sudo cat /opt/outline/access.txt
