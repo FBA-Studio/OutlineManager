@@ -28,7 +28,7 @@ namespace OutlineManager
         }
 
         /// <param name="apiUrl">URL for access to Management API</param>
-        /// <param name="hasSsl"><i>If your Outline Server hasn't <b>SSL connection</b> - set true</i></param>
+        /// <param name="hasSsl"><i>If your Outline Server hasn't <b>SSL connection</b> - set false</i></param>
         public Outline(string apiUrl, bool hasSsl)
         {
             ApiUrl = apiUrl;
