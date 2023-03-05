@@ -3,7 +3,7 @@
 
 ## Installation
 ```
-dotnet add package OutlineManager --version 1.0.2
+dotnet add package OutlineManager --version 1.0.3
 ```
 
 ## Quick start
