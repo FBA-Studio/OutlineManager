@@ -100,7 +100,7 @@ namespace OutlineManager
         /// <returns><see cref="true" />, if operation was successful</returns>
         public bool DeleteKey(int id)
         {
-            bool operation = CallRequest("access-keys", "DELETE", out _);
+            bool operation = CallRequest($"access-keys/{id}", "DELETE", out _);
             return operation;
         }
         /// <summary>
