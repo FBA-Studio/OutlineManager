@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using OutlineManager.Types;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using OutlineManagerExceptions;
 
 namespace OutlineManager
 {
@@ -20,7 +21,6 @@ namespace OutlineManager
         /// Welcome to OutlineAPI Manager!
         /// </summary>
         /// <param name="apiUrl">URL for access to Management API</param>
-        
         public Outline(string apiUrl)
         {
             ApiUrl = apiUrl;
@@ -53,10 +53,17 @@ namespace OutlineManager
                 }
                 return true;
             }
-            catch
+            catch(WebException exc)
             {
                 data = null;
-                return false;
+                if (exc.Message == "The SSL connection could not be established, see inner exception.")
+                    throw new OutlineAPIException("Your Outline Server hasn't SSL connection, please set hasSsl = false");
+                else if (exc.Message.Contains($"({ApiUrl}:443)"))
+                    throw new OutlineManagerException("Server not found, please check API URL");
+                else if (exc.Message.Contains("(404) Not Found"))
+                    throw new OutlineAPIException("Server returned 404: key not found");
+                else
+                    throw new OutlineAPIException("Unknown Exception, please check API URL and see inner exception", exc);
             }
         }
         private static bool CallRequest(string urlMethod, string method, JObject args, out string data)
@@ -65,16 +72,66 @@ namespace OutlineManager
             {
                 WebClient webClient = new WebClient();
                 webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+                if(HasSsl == false)
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 data = webClient.UploadString($"{ApiUrl}/{urlMethod}", method, args.ToString());
                 return true;
             }
-            catch
+            catch(WebException exc)
             {
                 data = null;
-                return false;
+                if (exc.Message == "The SSL connection could not be established, see inner exception.")
+                    throw new OutlineAPIException("Your Outline Server hasn't SSL connection, please set hasSsl = false");
+                else if (exc.Message.Contains($"({ApiUrl}:443)"))
+                    throw new OutlineManagerException("Server not found, please check API URL");
+                else if (exc.Message.Contains("(404) Not Found"))
+                    throw new OutlineAPIException("Server returned 404: key not found");
+                else
+                    throw new OutlineAPIException("Unknown Exception, please check API URL and see inner exception", exc);
             }
         }
 
+        /// <summary>
+        /// Get Outline key in <see cref="T:OutlineManager.Types.OutlineKey" /> by ID
+        /// </summary>
+        /// <param name="id">ID of key</param>
+        /// <returns>Key in <see cref="T:OutlineManager.Types.OutlineKey" /></returns>
+        /// <exception cref="OutlineManagerException"></exception>
+        public OutlineKey GetKeyById(int id)
+        {
+            var list = GetKeys();
+            OutlineKey oKey = new OutlineKey() { Id = -1 };
+            foreach (var key in list)
+                if (key.Id == id)
+                    oKey = key;
+            if (oKey.Id == -1)
+                throw new OutlineManagerException("Key not exist in your Outline Server");
+            else
+                return oKey;
+
+        }
+        /// <summary>
+        /// Get Outline key in <see cref="T:OutlineManager.Types.OutlineKey" /> by Name. <br></br><b>Avaiable methods:</b><br></br>- Equality by Name <br></br> - Equality by Name with Lower Case <br></br> - Starts with name with Lower Case
+        /// </summary>
+        /// <param name="name">Name of key</param>
+        /// <returns></returns>
+        /// <exception cref="OutlineManagerException"></exception>
+        public OutlineKey GetKeyByName(string name)
+        {
+            var list = GetKeys();
+            OutlineKey oKey = new OutlineKey() { Id = -1 };
+            foreach (var key in list)
+                if (key.Name.ToLower() == name.ToLower())
+                    oKey = key;
+                else if(key.Name == name)
+                    oKey = key;
+                else if (key.Name.ToLower().StartsWith(name.ToLower()))
+                    oKey = key;
+            if (oKey.Id == -1)
+                throw new OutlineManagerException("Key not exist or not found by name in your Outline Server");
+            else
+                return oKey;
+        }
         /// <summary>
         /// Get Outline Keys from Outline Server
         /// </summary>
@@ -166,4 +223,3 @@ namespace OutlineManager
         }
     }
 }
-
