@@ -146,17 +146,6 @@ namespace OutlineManager
         /// </summary>
         /// <param name="id">ID of key</param>
         /// <returns> <b><see cref="true" /></b>, if operation was successful</returns>
-        [Obsolete ("This method will be removed in the next version. Please consider using DeleteDataLimit() instead.")]
-        public bool DeteleDataLimit(int id)
-        {
-            bool operation = CallRequest($"access-keys/{id}/data-limit", "DELETE", out _);
-            return operation;
-        }
-        /// <summary>
-        /// Remove Data Limit for Key from Outline Server by ID
-        /// </summary>
-        /// <param name="id">ID of key</param>
-        /// <returns> <b><see cref="true" /></b>, if operation was successful</returns>
         public bool DeleteDataLimit(int id)
         {
             bool operation = CallRequest($"access-keys/{id}/data-limit", "DELETE", out _);
