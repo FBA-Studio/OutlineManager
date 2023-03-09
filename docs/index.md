@@ -42,7 +42,7 @@ namespace SomeProject
       
     static void Main()
     {
-      var keys = server1.getKeys();
+      var keys = server1.GetKeys();
       Console.WriteLine(keys);
     }
   }
