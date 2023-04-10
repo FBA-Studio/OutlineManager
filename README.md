@@ -1,5 +1,11 @@
-# OutlineManager
+<h1 align="center">OutlineManager<h1>
+
 .NET Library for Outline Proxy Manager API
+
+<a href="#"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/FBA-Studio/OutlineManager"></a>
+<a href="https://github.com/FBA-Studio/OutlineManager/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/FBA-Studio/OutlineManager"></a>
+<a href="https://www.nuget.org/packages/OutlineManager/"><img alt="Nuget" src="https://img.shields.io/nuget/dt/OutlineManager"></a>
+<a href="https://twitter.com/FBA_Studio"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/FBA_Studio?style=social"></a>
 
 ## Installation
 Enter this into terminal in your project directory:
