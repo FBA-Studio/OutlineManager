@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using OutlineManager.Types;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using Newtonsoft.Json;
 using OutlineManagerExceptions;
 
 namespace OutlineManager
@@ -92,6 +93,51 @@ namespace OutlineManager
         }
 
         /// <summary>
+        /// Get Info about Outline Server
+        /// </summary>
+        /// <returns>Outline Server Info in <see cref="T:OutlineManager.Types.OutlineServer" /></returns>
+        /// <exception cref="OutlineManagerException"></exception>
+        public OutlineServer GetOutlineServer() {
+            CallRequest("server", "GET", out var data);
+            return JsonConvert.DeserializeObject<OutlineServer>(data);
+        }
+        
+        ///<summary>
+        /// Changes the hostname for access keys.
+        /// Must be a valid hostname or IP address.
+        /// If it's a hostname, DNS must be set up independently of this API.
+        ///</summary>
+        /// <returns><b>True</b>, if the hostname was changed succesfully</returns>
+        public bool ChangeHostname(string newHostname) {
+            return CallRequest("server/hostname-for-access-keys", "PUT", new JObject { {"hostname", newHostname} }, out _);
+        }
+        
+        ///<summary>
+        /// Changes the default port for newly created access keys.
+        /// This can be a port already used for access keys.
+        ///</summary>
+        /// <returns><b>True</b>, if the port was changed succesfully</returns>
+        public bool ChangePort(int newPort) {
+            return CallRequest("server/port-for-new-access-keys", "PUT", new JObject { {"port", newPort} }, out _);
+        }
+        
+        ///<summary>
+        /// Rename the Outline Server
+        ///</summary>
+        /// <returns><b>True</b>, if the server name was changed succesfully</returns>
+        public bool RenameServer(string newName) {
+            return CallRequest("name", "PUT", new JObject { {"name", newName} }, out _);
+        }
+        
+        ///<summary>
+        /// Change Metrics Sharing
+        ///</summary>
+        /// <returns><b>True</b>, if the metrics sharing was changed succesfully</returns>
+        public bool ChangeMetricsSharing(bool newParam) {
+            return CallRequest("metrics/enabled", "PUT", new JObject { {"metricsEnabled", newParam} }, out _);
+        }
+            
+        /// <summary>
         /// Get Outline key in <see cref="T:OutlineManager.Types.OutlineKey" /> by ID
         /// </summary>
         /// <param name="id">ID of key</param>
@@ -116,17 +162,31 @@ namespace OutlineManager
         /// <param name="name">Name of key</param>
         /// <returns></returns>
         /// <exception cref="OutlineManagerException"></exception>
-        public OutlineKey GetKeyByName(string name)
+        public OutlineKey GetKeyByName(string name, SearchMethod searchMethod)
         {
             var list = GetKeys();
             OutlineKey oKey = new OutlineKey() { Id = -1 };
             foreach (var key in list)
-                if (key.Name.ToLower() == name.ToLower())
-                    oKey = key;
-                else if(key.Name == name)
-                    oKey = key;
-                else if (key.Name.ToLower().StartsWith(name.ToLower()))
-                    oKey = key;
+                switch (searchMethod)
+                {
+                    case SearchMethod.StartsWith:
+                        if (key.Name.StartsWith(name))
+                            oKey = key;
+                        break;
+                    case SearchMethod.StartsWithToLower:
+                        if (key.Name.ToLower().StartsWith(name.ToLower()))
+                            oKey = key;
+                        break;
+                    case SearchMethod.Equality:
+                        if (key.Name == name)
+                            oKey = key;
+                        break;
+                    case SearchMethod.EqualityToLower:
+                        if (key.Name.ToLower() == name.ToLower())
+                            oKey = key;
+                        break;
+                }
+
             if (oKey.Id == -1)
                 throw new OutlineManagerException("Key not exist or not found by name in your Outline Server");
             else
@@ -223,3 +283,4 @@ namespace OutlineManager
         }
     }
 }
+
