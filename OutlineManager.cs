@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
@@ -9,6 +9,8 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using Newtonsoft.Json;
 using OutlineManagerExceptions;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace OutlineManager
 {
@@ -54,7 +56,7 @@ namespace OutlineManager
                 }
                 return true;
             }
-            catch(WebException exc)
+            catch (WebException exc)
             {
                 data = null;
                 if (exc.Message == "The SSL connection could not be established, see inner exception.")
@@ -73,12 +75,12 @@ namespace OutlineManager
             {
                 WebClient webClient = new WebClient();
                 webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-                if(HasSsl == false)
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                if (HasSsl == false)
+                    ServicePointManager.ServerCertificateValidationCallback = (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
                 data = webClient.UploadString($"{ApiUrl}/{urlMethod}", method, args.ToString());
                 return true;
             }
-            catch(WebException exc)
+            catch (WebException exc)
             {
                 data = null;
                 if (exc.Message == "The SSL connection could not be established, see inner exception.")
@@ -97,46 +99,51 @@ namespace OutlineManager
         /// </summary>
         /// <returns>Outline Server Info in <see cref="T:OutlineManager.Types.OutlineServer" /></returns>
         /// <exception cref="OutlineManagerException"></exception>
-        public OutlineServer GetOutlineServer() {
+        public OutlineServer GetOutlineServer()
+        {
             CallRequest("server", "GET", out var data);
             return JsonConvert.DeserializeObject<OutlineServer>(data);
         }
-        
+
         ///<summary>
         /// Changes the hostname for access keys.
         /// Must be a valid hostname or IP address.
         /// If it's a hostname, DNS must be set up independently of this API.
         ///</summary>
         /// <returns><b>True</b>, if the hostname was changed succesfully</returns>
-        public bool ChangeHostname(string newHostname) {
-            return CallRequest("server/hostname-for-access-keys", "PUT", new JObject { {"hostname", newHostname} }, out _);
+        public bool ChangeHostname(string newHostname)
+        {
+            return CallRequest("server/hostname-for-access-keys", "PUT", new JObject { { "hostname", newHostname } }, out _);
         }
-        
+
         ///<summary>
         /// Changes the default port for newly created access keys.
         /// This can be a port already used for access keys.
         ///</summary>
         /// <returns><b>True</b>, if the port was changed succesfully</returns>
-        public bool ChangePort(int newPort) {
-            return CallRequest("server/port-for-new-access-keys", "PUT", new JObject { {"port", newPort} }, out _);
+        public bool ChangePort(int newPort)
+        {
+            return CallRequest("server/port-for-new-access-keys", "PUT", new JObject { { "port", newPort } }, out _);
         }
-        
+
         ///<summary>
         /// Rename the Outline Server
         ///</summary>
         /// <returns><b>True</b>, if the server name was changed succesfully</returns>
-        public bool RenameServer(string newName) {
-            return CallRequest("name", "PUT", new JObject { {"name", newName} }, out _);
+        public bool RenameServer(string newName)
+        {
+            return CallRequest("name", "PUT", new JObject { { "name", newName } }, out _);
         }
-        
+
         ///<summary>
         /// Change Metrics Sharing
         ///</summary>
         /// <returns><b>True</b>, if the metrics sharing was changed succesfully</returns>
-        public bool ChangeMetricsSharing(bool newParam) {
-            return CallRequest("metrics/enabled", "PUT", new JObject { {"metricsEnabled", newParam} }, out _);
+        public bool ChangeMetricsSharing(bool newParam)
+        {
+            return CallRequest("metrics/enabled", "PUT", new JObject { { "metricsEnabled", newParam } }, out _);
         }
-            
+
         /// <summary>
         /// Get Outline key in <see cref="T:OutlineManager.Types.OutlineKey" /> by ID
         /// </summary>
